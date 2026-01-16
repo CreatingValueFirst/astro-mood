@@ -1,10 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, Calendar, Brain, LogOut } from 'lucide-react';
+import { Calendar, Brain, LogOut } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { StarryBackground } from '@/components/StarryBackground';
+import { MonthlyForecastCard } from '@/components/MonthlyForecastCard';
 
 interface DashboardClientProps {
   profile: {
@@ -86,24 +87,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
             whileHover={{ y: -5, scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
-            <Card className="group bg-gray-900/50 border-purple-500/20 backdrop-blur-xl hover:bg-gray-900/70 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] h-full">
-              <CardHeader className="pb-3 sm:pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-purple-500/20 group-hover:bg-purple-500/30 transition-colors">
-                    <TrendingUp className="w-6 h-6 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                  </div>
-                  <CardTitle className="text-white text-lg sm:text-xl group-hover:text-purple-200 transition-colors">
-                    Monthly Forecast
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="text-gray-400 group-hover:text-gray-300 text-sm sm:text-base transition-colors">
-                Your personalized mood forecast is being generated...
-                <div className="mt-4 p-3 rounded-lg bg-purple-900/30 border border-purple-500/30">
-                  <p className="text-sm text-purple-300 font-medium">Coming soon!</p>
-                </div>
-              </CardContent>
-            </Card>
+            <MonthlyForecastCard />
           </motion.div>
 
           <motion.div
