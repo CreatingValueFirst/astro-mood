@@ -1,6 +1,4 @@
 {
-  "buildCommand": "cd packages/astro-core && npm run build && cd ../.. && cd apps/web && npm run build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "npm install",
-  "framework": null
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/web/.next"
 }
