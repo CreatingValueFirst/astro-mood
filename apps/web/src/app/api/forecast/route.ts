@@ -15,95 +15,14 @@ export async function GET(request: NextRequest) {
     const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
     const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
 
-    // Authenticate user
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // AUTHENTICATION DISABLED - Using mock data for public demo
+    const mockBirthDate = '1990-06-15'; // Gemini sun sign
+    const sunSign: ZodiacSign = calculateSunSignFromDate(new Date(mockBirthDate));
 
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    console.log(`🔮 Generating forecast for ${sunSign} - ${year}/${month}`);
 
-    // Get user's primary birth profile
-    const { data: profile, error: profileError } = await supabase
-      .from('birth_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('is_primary', true)
-      .single();
-
-    if (profileError || !profile) {
-      return NextResponse.json(
-        { error: 'No birth profile found. Please complete onboarding first.' },
-        { status: 404 }
-      );
-    }
-
-    // Check if forecast already exists in cache
-    const { data: cachedForecast } = await supabase
-      .from('monthly_forecasts')
-      .select('forecast_data, computed_at')
-      .eq('profile_id', profile.id)
-      .eq('year', year)
-      .eq('month', month)
-      .single();
-
-    // If cached and recent (less than 24 hours old), return it
-    if (cachedForecast) {
-      const computedAt = new Date(cachedForecast.computed_at);
-      const hoursSinceComputed = (Date.now() - computedAt.getTime()) / (1000 * 60 * 60);
-
-      if (hoursSinceComputed < 24) {
-        console.log('✅ Returning cached forecast');
-        return NextResponse.json({
-          forecast: cachedForecast.forecast_data,
-          cached: true,
-          computedAt: cachedForecast.computed_at,
-        });
-      }
-    }
-
-    // Get sun sign from natal chart or calculate it
-    let sunSign: ZodiacSign;
-
-    // Try to get from natal chart first
-    const { data: natalChart } = await supabase
-      .from('natal_charts')
-      .select('chart_data')
-      .eq('profile_id', profile.id)
-      .single();
-
-    if (natalChart && natalChart.chart_data?.sunSign) {
-      sunSign = natalChart.chart_data.sunSign;
-    } else {
-      // Calculate sun sign from birth date
-      sunSign = calculateSunSignFromDate(new Date(profile.birth_date));
-    }
-
-    console.log(`🔮 Generating new forecast for ${sunSign} - ${year}/${month}`);
-
-    // Generate forecast
+    // Generate forecast (no caching for public demo)
     const forecast = await generateMonthlyForecast(year, month, sunSign);
-
-    // Cache the forecast
-    const { error: upsertError } = await supabase
-      .from('monthly_forecasts')
-      .upsert({
-        profile_id: profile.id,
-        year,
-        month,
-        forecast_data: forecast,
-        computed_at: new Date().toISOString(),
-      }, {
-        onConflict: 'profile_id,year,month'
-      });
-
-    if (upsertError) {
-      console.error('Error caching forecast:', upsertError);
-      // Don't fail the request, just log the error
-    }
 
     return NextResponse.json({
       forecast,

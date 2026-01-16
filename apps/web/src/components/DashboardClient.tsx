@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Brain, LogOut } from 'lucide-react';
+import { Brain } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { StarryBackground } from '@/components/StarryBackground';
@@ -66,7 +66,8 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
               Your cosmic forecast dashboard
             </p>
           </div>
-          <form action={onSignOut}>
+          {/* Sign out button hidden for public demo */}
+          {/* <form action={onSignOut}>
             <AnimatedButton
               variant="outline"
               className="border-purple-400 text-purple-300 touch-target w-full sm:w-auto text-base py-6 sm:py-2 hover:bg-purple-900/50 transition-all"
@@ -76,7 +77,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
                 Sign Out
               </span>
             </AnimatedButton>
-          </form>
+          </form> */}
         </motion.div>
 
         {/* Feature Cards */}

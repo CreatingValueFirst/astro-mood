@@ -1,41 +1,23 @@
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 import { DashboardClient } from '@/components/DashboardClient';
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // AUTHENTICATION DISABLED - Using mock data for public demo
+  const mockProfile = {
+    name: 'Demo User',
+    birth_date: '1990-06-15', // Gemini sun sign
+  };
 
-  if (!user) {
-    redirect('/login');
-  }
-
-  // Fetch user's primary profile
-  const { data: profile } = await supabase
-    .from('birth_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('is_primary', true)
-    .single();
-
-  if (!profile) {
-    redirect('/onboarding');
-  }
+  const mockEmail = 'demo@astromood.app';
 
   const handleSignOut = async () => {
     'use server';
-    const supabase = await createClient();
-    await supabase.auth.signOut();
-    redirect('/');
+    // No-op for public demo
   };
 
   return (
     <DashboardClient
-      profile={{
-        name: profile.name,
-        birth_date: profile.birth_date,
-      }}
-      userEmail={user.email || ''}
+      profile={mockProfile}
+      userEmail={mockEmail}
       onSignOut={handleSignOut}
     />
   );

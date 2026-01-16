@@ -46,26 +46,27 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/signup') ||
     request.nextUrl.pathname.startsWith('/reset-password');
 
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/calendar') ||
-    request.nextUrl.pathname.startsWith('/insights') ||
-    request.nextUrl.pathname.startsWith('/settings') ||
-    request.nextUrl.pathname.startsWith('/onboarding');
+  // AUTHENTICATION DISABLED - Allow public access to all routes
+  // const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
+  //   request.nextUrl.pathname.startsWith('/calendar') ||
+  //   request.nextUrl.pathname.startsWith('/insights') ||
+  //   request.nextUrl.pathname.startsWith('/settings') ||
+  //   request.nextUrl.pathname.startsWith('/onboarding');
 
   // If user is not logged in and trying to access a protected route, redirect to login
-  if (!user && isProtectedRoute) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/login';
-    redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
+  // if (!user && isProtectedRoute) {
+  //   const redirectUrl = request.nextUrl.clone();
+  //   redirectUrl.pathname = '/login';
+  //   redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);
+  //   return NextResponse.redirect(redirectUrl);
+  // }
 
   // If user is logged in and trying to access auth routes, redirect to dashboard
-  if (user && isAuthRoute) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/dashboard';
-    return NextResponse.redirect(redirectUrl);
-  }
+  // if (user && isAuthRoute) {
+  //   const redirectUrl = request.nextUrl.clone();
+  //   redirectUrl.pathname = '/dashboard';
+  //   return NextResponse.redirect(redirectUrl);
+  // }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
