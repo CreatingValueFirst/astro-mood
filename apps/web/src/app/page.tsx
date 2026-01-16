@@ -1,76 +1,160 @@
+'use client';
+
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { Sparkles, Calendar, Brain } from 'lucide-react';
+import { AnimatedButton } from '@/components/AnimatedButton';
+import { StarryBackground } from '@/components/StarryBackground';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 100, damping: 10 },
+  },
+};
+
+const iconVariants = {
+  hidden: { scale: 0, rotate: -180 },
+  visible: {
+    scale: 1,
+    rotate: 0,
+    transition: { type: 'spring', stiffness: 200, damping: 15 },
+  },
+};
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom">
-      <div className="container flex max-w-4xl flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:py-12">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom overflow-hidden">
+      <StarryBackground />
+
+      <motion.div
+        className="container flex max-w-4xl flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:py-12 relative z-10"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {/* Logo/Title */}
-        <div className="space-y-3 sm:space-y-4">
-          <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl">
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <motion.div className="space-y-3 sm:space-y-4" variants={itemVariants}>
+          <motion.h1
+            className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 100, damping: 15, delay: 0.2 }}
+          >
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
               AstroMood
             </span>
-          </h1>
-          <p className="text-lg text-purple-200 sm:text-xl md:text-2xl">
+          </motion.h1>
+          <motion.p
+            className="text-lg text-purple-200 sm:text-xl md:text-2xl"
+            variants={itemVariants}
+          >
             Your cosmic mood companion
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Description */}
-        <p className="max-w-2xl text-base leading-relaxed text-gray-300 sm:text-lg">
+        <motion.p
+          className="max-w-2xl text-base leading-relaxed text-gray-300 sm:text-lg"
+          variants={itemVariants}
+        >
           Discover personalized monthly mood forecasts powered by real astronomical calculations.
           Understand how planetary transits influence your energy, focus, and emotions.
-        </p>
+        </motion.p>
 
         {/* Features */}
-        <div className="grid w-full max-w-3xl gap-4 sm:grid-cols-2 md:grid-cols-3 mt-6 sm:mt-8">
-          <div className="rounded-lg border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur">
-            <h3 className="text-lg font-semibold mb-2">Real Astronomy</h3>
-            <p className="text-sm text-gray-400">
+        <motion.div
+          className="grid w-full max-w-3xl gap-4 sm:grid-cols-2 md:grid-cols-3 mt-6 sm:mt-8"
+          variants={itemVariants}
+        >
+          <motion.div
+            className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+            whileHover={{ y: -5, scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <motion.div variants={iconVariants}>
+              <Sparkles className="w-8 h-8 mb-3 text-purple-400 group-hover:text-purple-300 transition-colors" />
+            </motion.div>
+            <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-200 transition-colors">Real Astronomy</h3>
+            <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
               Based on actual planetary positions, not generic horoscopes
             </p>
-          </div>
-          <div className="rounded-lg border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur">
-            <h3 className="text-lg font-semibold mb-2">Explainable</h3>
-            <p className="text-sm text-gray-400">
+          </motion.div>
+
+          <motion.div
+            className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+            whileHover={{ y: -5, scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <motion.div variants={iconVariants}>
+              <Brain className="w-8 h-8 mb-3 text-pink-400 group-hover:text-pink-300 transition-colors" />
+            </motion.div>
+            <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-200 transition-colors">Explainable</h3>
+            <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
               See exactly why certain days have specific mood patterns
             </p>
-          </div>
-          <div className="rounded-lg border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur">
-            <h3 className="text-lg font-semibold mb-2">Personalized</h3>
-            <p className="text-sm text-gray-400">
+          </motion.div>
+
+          <motion.div
+            className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] sm:col-span-2 md:col-span-1"
+            whileHover={{ y: -5, scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <motion.div variants={iconVariants}>
+              <Calendar className="w-8 h-8 mb-3 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+            </motion.div>
+            <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-200 transition-colors">Personalized</h3>
+            <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
               Forecasts tailored to your unique birth chart
             </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* CTA Buttons */}
-        <div className="flex w-full max-w-md flex-col gap-3 mt-6 sm:mt-8 sm:flex-row sm:gap-4">
+        <motion.div
+          className="flex w-full max-w-md flex-col gap-3 mt-6 sm:mt-8 sm:flex-row sm:gap-4"
+          variants={itemVariants}
+        >
           <Link href="/signup" className="flex-1">
-            <Button
+            <AnimatedButton
               size="lg"
-              className="w-full touch-target bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-base sm:text-lg py-6 sm:py-3"
+              className="w-full touch-target bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-base sm:text-lg py-6 sm:py-3 shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-all"
             >
               Get Started
-            </Button>
+            </AnimatedButton>
           </Link>
           <Link href="/login" className="flex-1">
-            <Button
+            <AnimatedButton
               size="lg"
               variant="outline"
-              className="w-full touch-target border-purple-400 text-purple-300 hover:bg-purple-900/50 text-base sm:text-lg py-6 sm:py-3"
+              className="w-full touch-target border-purple-400 text-purple-300 hover:bg-purple-900/50 text-base sm:text-lg py-6 sm:py-3 hover:border-purple-300 transition-all"
             >
               Sign In
-            </Button>
+            </AnimatedButton>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Footer */}
-        <p className="mt-12 text-sm text-gray-500 sm:mt-16">
+        <motion.p
+          className="mt-12 text-sm text-gray-500 sm:mt-16"
+          variants={itemVariants}
+        >
           Made with ☄️ using real ephemeris data
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     </div>
   );
 }
