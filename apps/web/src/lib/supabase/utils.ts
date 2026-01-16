@@ -30,7 +30,7 @@ export function formatSupabaseError(error: unknown): string {
       case '23503':
         return 'Referenced record not found.';
       case '42501':
-        return 'You don't have permission to perform this action.';
+        return "You don't have permission to perform this action.";
       default:
         return error.message || 'An unexpected database error occurred.';
     }
@@ -141,7 +141,7 @@ export async function deleteBirthProfile(supabase: any, profileId: string, userI
   // Check ownership
   const hasPermission = await checkProfileOwnership(supabase, profileId, userId);
   if (!hasPermission) {
-    throw new Error('You don't have permission to delete this profile.');
+    throw new Error("You don't have permission to delete this profile.");
   }
 
   // Delete profile (cascades to natal_charts and monthly_forecasts)
