@@ -125,7 +125,7 @@ CREATE POLICY "Users can update own forecasts"
   )
   WITH CHECK (
     profile_id IN (
-      SELECT id FROM birth_profiles WHERE user_id = auth.uint()
+      SELECT id FROM birth_profiles WHERE user_id = auth.uid()
     )
   );
 

@@ -1,15 +1,15 @@
 -- AstroMood Database Schema
 -- Initial migration: Core tables for birth profiles, natal charts, forecasts, and ephemeris cache
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: gen_random_uuid() is built into modern PostgreSQL (13+)
+-- No extension needed for UUID generation
 
 -- =====================================================
 -- Birth Profiles Table
 -- Stores user birth information for chart calculations
 -- =====================================================
 CREATE TABLE birth_profiles (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   birth_date TIMESTAMPTZ NOT NULL,
@@ -54,7 +54,7 @@ CREATE TRIGGER birth_profiles_updated_at
 -- Cached natal chart calculations
 -- =====================================================
 CREATE TABLE natal_charts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id UUID NOT NULL REFERENCES birth_profiles(id) ON DELETE CASCADE,
   chart_data JSONB NOT NULL,
   /* chart_data structure:
@@ -88,7 +88,7 @@ CREATE INDEX natal_charts_profile_id_idx ON natal_charts(profile_id);
 -- Cached forecast computations for each month
 -- =====================================================
 CREATE TABLE monthly_forecasts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   profile_id UUID NOT NULL REFERENCES birth_profiles(id) ON DELETE CASCADE,
   year INT NOT NULL,
   month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
