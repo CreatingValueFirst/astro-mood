@@ -3,7 +3,7 @@
  * Generates personalized monthly astrological forecasts with mood predictions
  */
 
-import type { ZodiacSign } from '@astro-mood/astro-core';
+import type { ZodiacSign } from '../astro-core';
 import {
   calculatePlanetaryPositions,
   findSignChanges,
@@ -16,7 +16,7 @@ import {
   getMercuryRetrogradeImpact,
   getAdviceForMood,
   explainMoodImpact,
-} from '@astro-mood/astro-core';
+} from '../astro-core';
 
 export interface MonthlyForecast {
   summary: string;
