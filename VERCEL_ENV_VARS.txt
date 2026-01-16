@@ -1,0 +1,15 @@
+# COPY THESE EXACT ENVIRONMENT VARIABLES TO VERCEL
+
+Variable 1:
+Name: NEXT_PUBLIC_SUPABASE_URL
+Value: https://fegqcrzdqbhoubruchky.supabase.co
+
+Variable 2:
+Name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlZ3FjcnpkcWJob3VicnVjaGt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc1NzcyMDAsImV4cCI6MjA1MzE1MzIwMH0.OtC2-XTfqdqFa8CtdG1NaQ_-EdD2nzG
+
+IMPORTANT:
+- Delete "EXAMPLE_NAME" variable
+- Add BOTH variables above
+- Select ALL environments (Production, Preview, Development) for each
+- Make sure there are NO spaces before or after the values
