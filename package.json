@@ -15,5 +15,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/CreatingValueFirst/astro-mood.git"
+  },
+  "devDependencies": {
+    "vercel": "^50.4.5"
   }
 }
