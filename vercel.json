@@ -1,4 +1,5 @@
 {
   "buildCommand": "npm run build",
+  "installCommand": "npm ci --force || npm install",
   "outputDirectory": "apps/web/.next"
 }
