@@ -1,0 +1,19 @@
+{
+  "name": "astro-mood-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd apps/web && npm run dev",
+    "build": "cd apps/web && npm run build",
+    "start": "cd apps/web && npm run start"
+  },
+  "description": "AstroMood - Your Cosmic Mood Companion",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CreatingValueFirst/astro-mood.git"
+  }
+}
