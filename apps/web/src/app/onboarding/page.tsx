@@ -46,20 +46,20 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black p-4 safe-top safe-bottom">
       <Card className="w-full max-w-md bg-gray-900/50 border-purple-500/20 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-white">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-center text-white">
             Tell us about yourself
           </CardTitle>
-          <CardDescription className="text-center text-gray-400">
+          <CardDescription className="text-center text-gray-400 text-base sm:text-sm">
             We need your birth date to generate your personalized forecast
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 px-4 sm:px-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-200">Name</Label>
+              <Label htmlFor="name" className="text-gray-200 text-base">Name</Label>
               <Input
                 id="name"
                 type="text"
@@ -67,11 +67,11 @@ export default function OnboardingPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500"
+                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="birthDate" className="text-gray-200">Birth Date</Label>
+              <Label htmlFor="birthDate" className="text-gray-200 text-base">Birth Date</Label>
               <Input
                 id="birthDate"
                 type="date"
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
                 onChange={(e) => setBirthDate(e.target.value)}
                 required
                 max={new Date().toISOString().split('T')[0]}
-                className="bg-gray-800/50 border-purple-500/30 text-white"
+                className="bg-gray-800/50 border-purple-500/30 text-white h-12 text-base"
               />
             </div>
             {error && (
@@ -89,7 +89,7 @@ export default function OnboardingPage() {
             )}
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="w-full touch-target bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-base sm:text-lg py-6 sm:py-3 mt-2"
               disabled={loading}
             >
               {loading ? 'Creating profile...' : 'Continue to Dashboard'}

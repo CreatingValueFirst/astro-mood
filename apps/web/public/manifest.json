@@ -1,0 +1,38 @@
+{
+  "name": "AstroMood - Your Cosmic Mood Companion",
+  "short_name": "AstroMood",
+  "description": "Personalized monthly mood forecasts based on real astronomical data",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a0b2e",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "health"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your mood forecast",
+      "url": "/dashboard",
+      "icons": [{
+        "src": "/icon-192.png",
+        "sizes": "192x192"
+      }]
+    }
+  ]
+}

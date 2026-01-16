@@ -42,20 +42,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black p-4 safe-top safe-bottom">
       <Card className="w-full max-w-md bg-gray-900/50 border-purple-500/20 backdrop-blur">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center text-white">
+        <CardHeader className="space-y-1 px-4 sm:px-6">
+          <CardTitle className="text-2xl sm:text-3xl font-bold text-center text-white">
             Welcome back
           </CardTitle>
-          <CardDescription className="text-center text-gray-400">
+          <CardDescription className="text-center text-gray-400 text-base sm:text-sm">
             Sign in to your AstroMood account
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 px-4 sm:px-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-200">Email</Label>
+              <Label htmlFor="email" className="text-gray-200 text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -63,11 +63,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500"
+                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-200">Password</Label>
+              <Label htmlFor="password" className="text-gray-200 text-base">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -75,7 +75,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500"
+                className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base"
               />
             </div>
             {error && (
@@ -84,15 +84,15 @@ export default function LoginPage() {
               </div>
             )}
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
+          <CardFooter className="flex flex-col space-y-4 px-4 sm:px-6 pb-6">
             <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              className="w-full touch-target bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-base sm:text-lg py-6 sm:py-3"
               disabled={loading}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
-            <p className="text-sm text-center text-gray-400">
+            <p className="text-sm sm:text-base text-center text-gray-400">
               Don't have an account?{' '}
               <Link href="/signup" className="text-purple-400 hover:text-purple-300 font-medium">
                 Sign up
