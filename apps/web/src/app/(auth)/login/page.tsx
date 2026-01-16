@@ -19,7 +19,7 @@ const cardVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 100, damping: 15 },
+    transition: { type: 'spring' as const, stiffness: 100, damping: 15 },
   },
 };
 
@@ -76,7 +76,7 @@ export default function LoginPage() {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+              transition={{ type: 'spring' as const, stiffness: 200, delay: 0.2 }}
             >
               <CardTitle className="text-2xl sm:text-3xl font-bold text-center text-white">
                 Welcome back

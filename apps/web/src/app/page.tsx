@@ -22,7 +22,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 100, damping: 10 },
+    transition: { type: 'spring' as const, stiffness: 100, damping: 10 },
   },
 };
 
@@ -31,7 +31,7 @@ const iconVariants = {
   visible: {
     scale: 1,
     rotate: 0,
-    transition: { type: 'spring', stiffness: 200, damping: 15 },
+    transition: { type: 'spring' as const, stiffness: 200, damping: 15 },
   },
 };
 
@@ -52,7 +52,7 @@ export default function Home() {
             className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 100, damping: 15, delay: 0.2 }}
+            transition={{ type: 'spring' as const, stiffness: 100, damping: 15, delay: 0.2 }}
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
               AstroMood
@@ -83,7 +83,7 @@ export default function Home() {
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <motion.div variants={iconVariants}>
               <Sparkles className="w-8 h-8 mb-3 text-purple-400 group-hover:text-purple-300 transition-colors" />
@@ -97,7 +97,7 @@ export default function Home() {
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <motion.div variants={iconVariants}>
               <Brain className="w-8 h-8 mb-3 text-pink-400 group-hover:text-pink-300 transition-colors" />
@@ -111,7 +111,7 @@ export default function Home() {
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] sm:col-span-2 md:col-span-1"
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <motion.div variants={iconVariants}>
               <Calendar className="w-8 h-8 mb-3 text-indigo-400 group-hover:text-indigo-300 transition-colors" />

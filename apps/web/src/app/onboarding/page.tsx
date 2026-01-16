@@ -18,7 +18,7 @@ const cardVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', stiffness: 100, damping: 15 },
+    transition: { type: 'spring' as const, stiffness: 100, damping: 15 },
   },
 };
 
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
               className="flex justify-center mb-4"
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 150, delay: 0.2 }}
+              transition={{ type: 'spring' as const, stiffness: 150, delay: 0.2 }}
             >
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.5)]">
                 <Sparkles className="w-8 h-8 text-white" />

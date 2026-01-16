@@ -31,7 +31,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 100, damping: 10 },
+    transition: { type: 'spring' as const, stiffness: 100, damping: 10 },
   },
 };
 
@@ -56,7 +56,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
               className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 100, delay: 0.3 }}
+              transition={{ type: 'spring' as const, stiffness: 100, delay: 0.3 }}
             >
               Welcome, {profile.name}
             </motion.h1>
@@ -84,7 +84,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
         >
           <motion.div
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <Card className="group bg-gray-900/50 border-purple-500/20 backdrop-blur-xl hover:bg-gray-900/70 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] h-full">
               <CardHeader className="pb-3 sm:pb-6">
@@ -108,7 +108,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
 
           <motion.div
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <Card className="group bg-gray-900/50 border-purple-500/20 backdrop-blur-xl hover:bg-gray-900/70 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] h-full">
               <CardHeader className="pb-3 sm:pb-6">
@@ -132,7 +132,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
 
           <motion.div
             whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
             <Card className="group bg-gray-900/50 border-purple-500/20 backdrop-blur-xl hover:bg-gray-900/70 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] h-full">
               <CardHeader className="pb-3 sm:pb-6">
