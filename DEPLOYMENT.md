@@ -32,7 +32,7 @@ Before deploying, ensure you have:
 7. Wait 2-3 minutes for the build to complete
 8. Visit your deployed app at `https://your-project-name.vercel.app`
 
-### Option 2: Import Existing Repository
+### Option 2: Import Existing Repository (RECOMMENDED)
 
 1. **Go to Vercel Dashboard**: https://vercel.com/dashboard
 2. Click **Add New...** → **Project**
@@ -41,20 +41,26 @@ Before deploying, ensure you have:
    - If not visible, click "Adjust GitHub App Permissions" to grant access
 4. **Configure Project**:
    - Framework Preset: **Next.js** (should auto-detect)
-   - Root Directory: **apps/web** ⚠️ **IMPORTANT**: Click "Edit" and set this
-   - Build Command: `npm run build` (default is fine)
-   - Output Directory: `.next` (default is fine)
-   - Install Command: `npm install` (default is fine)
+   - **Root Directory: `apps/web`** ⚠️ **CRITICAL**: Click "Edit" next to Root Directory and type: `apps/web`
+     - This tells Vercel to build from the apps/web folder
+     - Without this, the build will fail!
+   - Build Command: `npm run build` (leave as default)
+   - Output Directory: `.next` (leave as default)
+   - Install Command: `npm install` (leave as default)
+
 5. **Environment Variables**:
-   Click "Add Environment Variable" for each:
+   Click "Add Environment Variable" and add BOTH of these:
 
    | Name | Value |
    |------|-------|
    | `NEXT_PUBLIC_SUPABASE_URL` | `https://fegqcrzdqbhoubruchky.supabase.co` |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...` (your full anon key) |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGci...` (paste your full anon key) |
+
+   ⚠️ **Important**: Make sure there are no extra spaces before or after the values!
 
 6. Click **Deploy**
 7. Wait for the build to complete (usually 2-3 minutes)
+8. If successful, you'll get a live URL like `https://astro-mood-xyz.vercel.app`
 
 ## Post-Deployment Configuration
 
