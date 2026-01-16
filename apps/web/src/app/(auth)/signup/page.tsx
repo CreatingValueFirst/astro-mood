@@ -34,6 +34,12 @@ export default function SignupPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  // Debug: Log environment variables (remove in production)
+  useEffect(() => {
+    console.log('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log('🔍 Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...');
+  }, []);
+
   // Password validation
   const hasMinLength = password.length >= 6;
   const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
@@ -69,14 +75,31 @@ export default function SignupPage() {
       if (error) throw error;
 
       if (data.user) {
-        setSuccess(true);
-        setTimeout(() => {
-          router.push('/onboarding');
-          router.refresh();
-        }, 800);
+        // Check if email confirmation is required
+        if (data.session) {
+          // User is auto-confirmed and logged in
+          setSuccess(true);
+          setTimeout(() => {
+            router.push('/onboarding');
+            router.refresh();
+          }, 800);
+        } else {
+          // Email confirmation required
+          setError('Please check your email to confirm your account before signing in.');
+          setLoading(false);
+        }
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to create account');
+      // Provide clearer error messages
+      let errorMessage = err.message || 'Failed to create account';
+
+      if (errorMessage.includes('email_address_invalid')) {
+        errorMessage = 'Please use a valid email address (e.g., @gmail.com, @outlook.com)';
+      } else if (errorMessage.includes('already registered')) {
+        errorMessage = 'This email is already registered. Please sign in instead.';
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

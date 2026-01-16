@@ -55,7 +55,18 @@ export default function LoginPage() {
         }, 800);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+      // Provide clearer error messages
+      let errorMessage = err.message || 'Failed to sign in';
+
+      if (errorMessage.includes('Email not confirmed')) {
+        errorMessage = 'Please check your email and confirm your account before signing in.';
+      } else if (errorMessage.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+      } else if (errorMessage.includes('Email not found')) {
+        errorMessage = 'No account found with this email. Please sign up first.';
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
