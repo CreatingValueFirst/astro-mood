@@ -1,20 +1,15 @@
+-- =============================================================================
 -- AstroMood Row Level Security (RLS) Policies
 -- Ensures users can only access their own data
+-- =============================================================================
 
--- =====================================================
--- Enable RLS on all tables
--- =====================================================
+-- Enable RLS
 ALTER TABLE birth_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE natal_charts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE monthly_forecasts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ephemeris_cache ENABLE ROW LEVEL SECURITY;
 
--- =====================================================
--- Birth Profiles Policies
--- Users can CRUD their own profiles only
--- =====================================================
-
--- SELECT: Users can read their own profiles
+-- Birth Profiles Policies (Users can CRUD their own profiles only)
 CREATE POLICY "Users can view own birth profiles"
   ON birth_profiles
   FOR SELECT
@@ -39,12 +34,7 @@ CREATE POLICY "Users can delete own birth profiles"
   FOR DELETE
   USING (auth.uid() = user_id);
 
--- =====================================================
--- Natal Charts Policies
--- Users can access natal charts for their profiles
--- =====================================================
-
--- SELECT: Users can read natal charts for their profiles
+-- Natal Charts Policies (Users can access charts for their profiles)
 CREATE POLICY "Users can view own natal charts"
   ON natal_charts
   FOR SELECT
@@ -89,12 +79,7 @@ CREATE POLICY "Users can delete own natal charts"
     )
   );
 
--- =====================================================
--- Monthly Forecasts Policies
--- Users can access forecasts for their profiles
--- =====================================================
-
--- SELECT: Users can read forecasts for their profiles
+-- Monthly Forecasts Policies (Users can access forecasts for their profiles)
 CREATE POLICY "Users can view own forecasts"
   ON monthly_forecasts
   FOR SELECT
@@ -139,12 +124,7 @@ CREATE POLICY "Users can delete own forecasts"
     )
   );
 
--- =====================================================
--- Ephemeris Cache Policies
--- Ephemeris data is shared (public read, system write)
--- =====================================================
-
--- SELECT: All authenticated users can read ephemeris data
+-- Ephemeris Cache Policies (Shared data: public read, service write)
 CREATE POLICY "Authenticated users can view ephemeris cache"
   ON ephemeris_cache
   FOR SELECT
@@ -174,9 +154,7 @@ CREATE POLICY "Service role can delete ephemeris data"
   TO service_role
   USING (true);
 
--- =====================================================
--- Helper function for profile ownership check
--- =====================================================
+-- Helper Functions
 CREATE OR REPLACE FUNCTION user_owns_profile(profile_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
@@ -187,11 +165,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- =====================================================
--- Comments for documentation
--- =====================================================
-COMMENT ON POLICY "Users can view own birth profiles" ON birth_profiles IS 'Users can only SELECT their own birth profiles';
-COMMENT ON POLICY "Users can view own natal charts" ON natal_charts IS 'Users can only SELECT natal charts for their own profiles';
-COMMENT ON POLICY "Users can view own forecasts" ON monthly_forecasts IS 'Users can only SELECT forecasts for their own profiles';
-COMMENT ON POLICY "Authenticated users can view ephemeris cache" ON ephemeris_cache IS 'All authenticated users can read shared ephemeris data';
-COMMENT ON FUNCTION user_owns_profile IS 'Helper function to check if current user owns a profile';
+COMMENT ON FUNCTION user_owns_profile IS 'Checks if current user owns a profile';

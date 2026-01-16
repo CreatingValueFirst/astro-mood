@@ -1,12 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Brain } from 'lucide-react';
+import { Brain, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { StarryBackground } from '@/components/StarryBackground';
 import { MonthlyForecastCard } from '@/components/MonthlyForecastCard';
 import { CalendarView } from '@/components/CalendarView';
+import { TodayTransits } from '@/components/TodayTransits';
 
 interface DashboardClientProps {
   profile: {
@@ -80,6 +82,11 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
           </form> */}
         </motion.div>
 
+        {/* Today's Transits - Full Width */}
+        <motion.div variants={itemVariants}>
+          <TodayTransits />
+        </motion.div>
+
         {/* Feature Cards */}
         <motion.div
           className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
@@ -103,24 +110,26 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
             whileHover={{ y: -5, scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
           >
-            <Card className="group bg-gray-900/50 border-purple-500/20 backdrop-blur-xl hover:bg-gray-900/70 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.2)] h-full">
-              <CardHeader className="pb-3 sm:pb-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-indigo-500/20 group-hover:bg-indigo-500/30 transition-colors">
-                    <Brain className="w-6 h-6 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+            <Link href="/chart">
+              <Card className="group bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-xl hover:from-purple-900/70 hover:to-pink-900/70 hover:border-purple-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] h-full cursor-pointer">
+                <CardHeader className="pb-3 sm:pb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-purple-500/20 group-hover:bg-purple-500/30 transition-colors">
+                      <Sparkles className="w-6 h-6 text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    </div>
+                    <CardTitle className="text-white text-lg sm:text-xl group-hover:text-purple-200 transition-colors">
+                      Natal Chart
+                    </CardTitle>
                   </div>
-                  <CardTitle className="text-white text-lg sm:text-xl group-hover:text-purple-200 transition-colors">
-                    Insights
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="text-gray-400 group-hover:text-gray-300 text-sm sm:text-base transition-colors">
-                Understand your natal chart and current transits
-                <div className="mt-4 p-3 rounded-lg bg-indigo-900/30 border border-indigo-500/30">
-                  <p className="text-sm text-indigo-300 font-medium">Coming soon!</p>
-                </div>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent className="text-gray-300 group-hover:text-white text-sm sm:text-base transition-colors">
+                  View your complete birth chart with planetary positions and aspects
+                  <div className="mt-4 p-3 rounded-lg bg-purple-900/40 border border-purple-500/40 group-hover:bg-purple-900/60 transition-colors">
+                    <p className="text-sm text-purple-300 font-medium">✨ Click to explore</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </motion.div>
         </motion.div>
 
