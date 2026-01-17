@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Brain, Sparkles } from 'lucide-react';
+import { Brain, Sparkles, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AnimatedButton } from '@/components/AnimatedButton';
@@ -115,7 +115,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
 
         {/* Feature Cards */}
         <motion.div
-          className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           variants={itemVariants}
         >
           <motion.div
@@ -152,6 +152,32 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
                   View your complete birth chart with planetary positions and aspects
                   <div className="mt-4 p-3 rounded-lg bg-purple-900/40 border border-purple-500/40 group-hover:bg-purple-900/60 transition-colors">
                     <p className="text-sm text-purple-300 font-medium">✨ Click to explore</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
+          >
+            <Link href="/zodiac">
+              <Card className="group bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border-indigo-500/30 backdrop-blur-xl hover:from-indigo-900/70 hover:to-purple-900/70 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(99,102,241,0.3)] h-full cursor-pointer">
+                <CardHeader className="pb-3 sm:pb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-indigo-500/20 group-hover:bg-indigo-500/30 transition-colors">
+                      <BookOpen className="w-6 h-6 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+                    </div>
+                    <CardTitle className="text-white text-lg sm:text-xl group-hover:text-indigo-200 transition-colors">
+                      Zodiac Guide
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-gray-300 group-hover:text-white text-sm sm:text-base transition-colors">
+                  Explore all 12 zodiac signs, planets, and astrological wisdom
+                  <div className="mt-4 p-3 rounded-lg bg-indigo-900/40 border border-indigo-500/40 group-hover:bg-indigo-900/60 transition-colors">
+                    <p className="text-sm text-indigo-300 font-medium">📚 Learn more</p>
                   </div>
                 </CardContent>
               </Card>
