@@ -5,37 +5,63 @@ import { motion } from 'framer-motion';
 import { Sparkles, Calendar, Brain } from 'lucide-react';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { StarryBackground } from '@/components/StarryBackground';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: 'spring' as const, stiffness: 100, damping: 10 },
-  },
-};
-
-const iconVariants = {
-  hidden: { scale: 0, rotate: -180 },
-  visible: {
-    scale: 1,
-    rotate: 0,
-    transition: { type: 'spring' as const, stiffness: 200, damping: 15 },
-  },
-};
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export default function Home() {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Animation variants that respect reduced motion preference
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+          },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : { type: 'spring' as const, stiffness: 100, damping: 10 },
+    },
+  };
+
+  const iconVariants = {
+    hidden: { scale: prefersReducedMotion ? 1 : 0, rotate: prefersReducedMotion ? 0 : -180 },
+    visible: {
+      scale: 1,
+      rotate: 0,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : { type: 'spring' as const, stiffness: 200, damping: 15 },
+    },
+  };
+
+  const titleVariants = {
+    scale: prefersReducedMotion ? 1 : 0.5,
+    opacity: prefersReducedMotion ? 1 : 0,
+  };
+
+  const titleTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 100, damping: 15, delay: 0.2 };
+
+  const hoverAnimation = prefersReducedMotion
+    ? {}
+    : { y: -5, scale: 1.02 };
+
+  const hoverTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 300, damping: 20 };
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom overflow-hidden">
       <StarryBackground />
@@ -50,9 +76,9 @@ export default function Home() {
         <motion.div className="space-y-3 sm:space-y-4" variants={itemVariants}>
           <motion.h1
             className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl"
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={titleVariants}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring' as const, stiffness: 100, damping: 15, delay: 0.2 }}
+            transition={titleTransition}
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
               AstroMood
@@ -82,8 +108,8 @@ export default function Home() {
         >
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <motion.div variants={iconVariants}>
               <Sparkles className="w-8 h-8 mb-3 text-purple-400 group-hover:text-purple-300 transition-colors" />
@@ -96,8 +122,8 @@ export default function Home() {
 
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]"
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <motion.div variants={iconVariants}>
               <Brain className="w-8 h-8 mb-3 text-pink-400 group-hover:text-pink-300 transition-colors" />
@@ -110,8 +136,8 @@ export default function Home() {
 
           <motion.div
             className="group rounded-xl border border-purple-500/20 bg-purple-900/20 p-6 backdrop-blur hover:bg-purple-900/40 hover:border-purple-500/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] sm:col-span-2 md:col-span-1"
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <motion.div variants={iconVariants}>
               <Calendar className="w-8 h-8 mb-3 text-indigo-400 group-hover:text-indigo-300 transition-colors" />

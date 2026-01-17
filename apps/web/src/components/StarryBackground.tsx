@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export function StarryBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,7 +36,22 @@ export function StarryBackground() {
       });
     }
 
-    // Create shooting stars
+    // If user prefers reduced motion, just render static stars
+    if (prefersReducedMotion) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach((star) => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.fill();
+      });
+
+      return () => {
+        window.removeEventListener('resize', setCanvasSize);
+      };
+    }
+
+    // Create shooting stars (only for users who don't prefer reduced motion)
     const shootingStars: { x: number; y: number; length: number; speed: number; opacity: number }[] = [];
 
     const createShootingStar = () => {
@@ -110,13 +127,14 @@ export function StarryBackground() {
       cancelAnimationFrame(animationId);
       clearInterval(shootingStarInterval);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
       style={{ zIndex: 1 }}
+      aria-hidden="true"
     />
   );
 }

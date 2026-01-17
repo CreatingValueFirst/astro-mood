@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, Sparkles, Calendar as CalendarIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface MonthlyForecastCardProps {
   className?: string;
@@ -162,6 +163,8 @@ export function MonthlyForecastCard({ className }: MonthlyForecastCardProps) {
 }
 
 function MoodBar({ label, value, color }: { label: string; value: number; color: string }) {
+  const prefersReducedMotion = useReducedMotion();
+
   const colorClasses = {
     orange: 'bg-orange-500',
     blue: 'bg-blue-500',
@@ -178,9 +181,9 @@ function MoodBar({ label, value, color }: { label: string; value: number; color:
       <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
         <motion.div
           className={`h-full ${colorClasses[color as keyof typeof colorClasses]}`}
-          initial={{ width: 0 }}
+          initial={{ width: prefersReducedMotion ? `${value}%` : 0 }}
           animate={{ width: `${value}%` }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 1, ease: 'easeOut' }}
         />
       </div>
     </div>

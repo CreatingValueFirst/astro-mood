@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface DayData {
   date: string;
@@ -34,12 +35,17 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ className }: CalendarViewProps) {
+  const prefersReducedMotion = useReducedMotion();
   const [forecast, setForecast] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<DayData | null>(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState<KeyDate[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Respect user's motion preferences
+  const hoverAnimation = prefersReducedMotion ? {} : { scale: 1.05 };
+  const tapAnimation = prefersReducedMotion ? {} : { scale: 0.95 };
 
   useEffect(() => {
     fetchForecast();
@@ -269,8 +275,8 @@ export function CalendarView({ className }: CalendarViewProps) {
                     cursor-pointer
                     group/day
                   `}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={hoverAnimation}
+                  whileTap={tapAnimation}
                 >
                   <span className="text-sm font-semibold text-white">
                     {dayNumber}

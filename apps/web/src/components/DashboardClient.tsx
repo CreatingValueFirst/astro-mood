@@ -9,6 +9,7 @@ import { StarryBackground } from '@/components/StarryBackground';
 import { MonthlyForecastCard } from '@/components/MonthlyForecastCard';
 import { CalendarView } from '@/components/CalendarView';
 import { TodayTransits } from '@/components/TodayTransits';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface DashboardClientProps {
   profile: {
@@ -19,27 +20,50 @@ interface DashboardClientProps {
   onSignOut: () => void;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: 'spring' as const, stiffness: 100, damping: 10 },
-  },
-};
-
 export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClientProps) {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Animation variants that respect reduced motion preference
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : {
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
+          },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReducedMotion
+        ? { duration: 0 }
+        : { type: 'spring' as const, stiffness: 100, damping: 10 },
+    },
+  };
+
+  const titleVariants = {
+    scale: prefersReducedMotion ? 1 : 0.9,
+    opacity: prefersReducedMotion ? 1 : 0,
+  };
+
+  const titleTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 100, delay: 0.3 };
+
+  const hoverAnimation = prefersReducedMotion
+    ? {}
+    : { y: -5, scale: 1.02 };
+
+  const hoverTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 300, damping: 20 };
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white p-4 sm:p-6 md:p-8 safe-top safe-bottom overflow-hidden">
       <StarryBackground />
@@ -58,9 +82,9 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
           <div className="flex-1">
             <motion.h1
               className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent"
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={titleVariants}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring' as const, stiffness: 100, delay: 0.3 }}
+              transition={titleTransition}
             >
               Welcome, {profile.name}
             </motion.h1>
@@ -93,22 +117,22 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
           variants={itemVariants}
         >
           <motion.div
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <MonthlyForecastCard />
           </motion.div>
 
           <motion.div
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <CalendarView />
           </motion.div>
 
           <motion.div
-            whileHover={{ y: -5, scale: 1.02 }}
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            whileHover={hoverAnimation}
+            transition={hoverTransition}
           >
             <Link href="/chart">
               <Card className="group bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-xl hover:from-purple-900/70 hover:to-pink-900/70 hover:border-purple-500/50 transition-all duration-300 hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] h-full cursor-pointer">
