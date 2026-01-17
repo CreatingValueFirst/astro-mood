@@ -51,7 +51,7 @@ export function useFetch<T>(
 
   const mountedRef = useRef(true);
   const retryCountRef = useRef(0);
-  const refreshIntervalRef = useRef<NodeJS.Timeout>();
+  const refreshIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Vercel best practice: rerender-functional-setstate
   // Use functional form of setState for callbacks that shouldn't change
