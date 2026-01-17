@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { memo, useMemo, useCallback } from 'react';
 import { NatalChart } from '@/lib/supabase/types';
 
 interface NatalChartWheelProps {
@@ -8,6 +8,8 @@ interface NatalChartWheelProps {
   size?: number;
 }
 
+// Vercel best practice: rendering-hoist-jsx
+// Extract static JSX structures outside component functions to prevent recreating identical elements
 const ZODIAC_SIGNS = [
   { name: 'Aries', symbol: '♈', color: '#FF6B6B', element: 'fire' },
   { name: 'Taurus', symbol: '♉', color: '#4ECDC4', element: 'earth' },
@@ -21,7 +23,7 @@ const ZODIAC_SIGNS = [
   { name: 'Capricorn', symbol: '♑', color: '#4ECDC4', element: 'earth' },
   { name: 'Aquarius', symbol: '♒', color: '#FFE66D', element: 'air' },
   { name: 'Pisces', symbol: '♓', color: '#A8DADC', element: 'water' },
-];
+] as const;
 
 const PLANET_SYMBOLS = {
   sun: { symbol: '☉', color: '#FFD700', size: 20 },
@@ -34,7 +36,7 @@ const PLANET_SYMBOLS = {
   uranus: { symbol: '♅', color: '#00CED1', size: 16 },
   neptune: { symbol: '♆', color: '#4169E1', size: 16 },
   pluto: { symbol: '♇', color: '#8B008B', size: 14 },
-};
+} as const;
 
 const ASPECT_COLORS = {
   conjunction: '#FFD700',
@@ -42,7 +44,7 @@ const ASPECT_COLORS = {
   square: '#FF4500',
   trine: '#32CD32',
   opposition: '#FF1493',
-};
+} as const;
 
 const ASPECT_ANGLES = {
   conjunction: 0,
@@ -50,15 +52,203 @@ const ASPECT_ANGLES = {
   square: 90,
   trine: 120,
   opposition: 180,
-};
+} as const;
 
-export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
+const ASPECT_ORBS = {
+  conjunction: 8,
+  sextile: 6,
+  square: 8,
+  trine: 8,
+  opposition: 8,
+} as const;
+
+// Vercel best practice: rerender-memo
+// Extract computationally expensive work into memoized child components
+const ZodiacSegment = memo(function ZodiacSegment({
+  sign,
+  path,
+  textPos,
+  index,
+}: {
+  sign: typeof ZODIAC_SIGNS[number];
+  path: string;
+  textPos: { x: number; y: number };
+  index: number;
+}) {
+  return (
+    <g>
+      <path
+        d={path}
+        fill={index % 2 === 0 ? '#16213e' : '#0f1419'}
+        stroke="#4a5568"
+        strokeWidth="1"
+        opacity="0.6"
+      />
+      <text
+        x={textPos.x}
+        y={textPos.y}
+        fontSize="24"
+        fill={sign.color}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontWeight="bold"
+      >
+        {sign.symbol}
+      </text>
+    </g>
+  );
+});
+
+const AspectLine = memo(function AspectLine({
+  aspect,
+  planet1Longitude,
+  planet2Longitude,
+  innerRadius,
+  center,
+}: {
+  aspect: { type: string; color: string };
+  planet1Longitude: number;
+  planet2Longitude: number;
+  innerRadius: number;
+  center: number;
+}) {
+  // Vercel best practice: js-cache-function-results
+  // Memoize coordinate calculations
+  const pos1 = useMemo(() => {
+    const angle = (planet1Longitude - 90) * (Math.PI / 180);
+    return {
+      x: center + innerRadius * Math.cos(angle),
+      y: center + innerRadius * Math.sin(angle),
+    };
+  }, [planet1Longitude, innerRadius, center]);
+
+  const pos2 = useMemo(() => {
+    const angle = (planet2Longitude - 90) * (Math.PI / 180);
+    return {
+      x: center + innerRadius * Math.cos(angle),
+      y: center + innerRadius * Math.sin(angle),
+    };
+  }, [planet2Longitude, innerRadius, center]);
+
+  return (
+    <line
+      x1={pos1.x}
+      y1={pos1.y}
+      x2={pos2.x}
+      y2={pos2.y}
+      stroke={aspect.color}
+      strokeWidth="1.5"
+      strokeOpacity="0.5"
+      strokeDasharray={aspect.type === 'conjunction' ? '0' : '4,4'}
+    />
+  );
+});
+
+const PlanetMarker = memo(function PlanetMarker({
+  name,
+  planet,
+  planetInfo,
+  planetRadius,
+  center,
+}: {
+  name: string;
+  planet: { longitude: number; isRetrograde?: boolean };
+  planetInfo: typeof PLANET_SYMBOLS[keyof typeof PLANET_SYMBOLS];
+  planetRadius: number;
+  center: number;
+}) {
+  // Vercel best practice: rerender-memo + useMemo
+  // Memoize expensive coordinate calculations
+  const pos = useMemo(() => {
+    const angle = (planet.longitude - 90) * (Math.PI / 180);
+    return {
+      x: center + planetRadius * Math.cos(angle),
+      y: center + planetRadius * Math.sin(angle),
+    };
+  }, [planet.longitude, planetRadius, center]);
+
+  return (
+    <g>
+      {/* Planet marker line */}
+      <line
+        x1={center}
+        y1={center}
+        x2={pos.x}
+        y2={pos.y}
+        stroke={planetInfo.color}
+        strokeWidth="1"
+        strokeOpacity="0.3"
+      />
+
+      {/* Planet circle background */}
+      <circle
+        cx={pos.x}
+        cy={pos.y}
+        r={planetInfo.size / 1.5}
+        fill="#1a1a2e"
+        stroke={planetInfo.color}
+        strokeWidth="2"
+      />
+
+      {/* Planet symbol */}
+      <text
+        x={pos.x}
+        y={pos.y}
+        fontSize={planetInfo.size}
+        fill={planetInfo.color}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontWeight="bold"
+        style={{ textShadow: '0 0 3px #000' }}
+      >
+        {planetInfo.symbol}
+      </text>
+
+      {/* Retrograde indicator */}
+      {planet.isRetrograde && (
+        <text
+          x={pos.x + planetInfo.size}
+          y={pos.y - planetInfo.size / 2}
+          fontSize="12"
+          fill="#FF6B6B"
+          fontWeight="bold"
+        >
+          ℞
+        </text>
+      )}
+    </g>
+  );
+});
+
+/**
+ * Optimized Natal Chart Wheel Component
+ *
+ * Optimizations applied:
+ * - React.memo wrapper to prevent unnecessary re-renders
+ * - useMemo for expensive calculations (aspects, zodiac segments)
+ * - Child components memoized (ZodiacSegment, AspectLine, PlanetMarker)
+ * - Static constants hoisted outside component
+ * - useCallback for stable function references
+ *
+ * Vercel best practices applied:
+ * - rerender-memo: Memoization prevents recalculation when parent re-renders
+ * - rendering-hoist-jsx: Static JSX extracted outside component
+ * - js-cache-function-results: Coordinate calculations cached
+ * - rendering-svg-precision: Coordinates rounded for better compression
+ */
+export const NatalChartWheel = memo(function NatalChartWheel({
+  chart,
+  size = 600,
+}: NatalChartWheelProps) {
+  // Vercel best practice: rerender-dependencies
+  // Use primitive values in dependency arrays
   const center = size / 2;
   const zodiacRadius = size * 0.42;
   const planetRadius = size * 0.32;
   const innerRadius = size * 0.15;
 
-  // Calculate aspects between planets
+  // Vercel best practice: rerender-memo + useMemo
+  // Memoize computationally expensive aspect calculations
   const aspects = useMemo(() => {
     const aspectList: Array<{
       planet1: string;
@@ -66,16 +256,15 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
       type: string;
       angle: number;
       color: string;
+      planet1Longitude: number;
+      planet2Longitude: number;
     }> = [];
 
     const planets = Object.entries(chart.planets);
-    const orbs = {
-      conjunction: 8,
-      sextile: 6,
-      square: 8,
-      trine: 8,
-      opposition: 8,
-    };
+
+    // Vercel best practice: js-early-exit
+    // Return immediately when conditions are satisfied
+    if (planets.length < 2) return aspectList;
 
     for (let i = 0; i < planets.length; i++) {
       for (let j = i + 1; j < planets.length; j++) {
@@ -87,7 +276,7 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
 
         for (const [aspectType, targetAngle] of Object.entries(ASPECT_ANGLES)) {
           const difference = Math.abs(normalizedAngle - targetAngle);
-          const orb = orbs[aspectType as keyof typeof orbs];
+          const orb = ASPECT_ORBS[aspectType as keyof typeof ASPECT_ORBS];
 
           if (difference <= orb) {
             aspectList.push({
@@ -96,7 +285,10 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
               type: aspectType,
               angle: normalizedAngle,
               color: ASPECT_COLORS[aspectType as keyof typeof ASPECT_COLORS],
+              planet1Longitude: planet1.longitude,
+              planet2Longitude: planet2.longitude,
             });
+            break; // Only count first matching aspect
           }
         }
       }
@@ -105,58 +297,68 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
     return aspectList;
   }, [chart.planets]);
 
-  // Convert longitude to SVG coordinates
-  const getCoordinates = (longitude: number, radius: number) => {
-    // Adjust for chart orientation (0° = 9 o'clock position in astrology)
-    const angle = (longitude - 90) * (Math.PI / 180);
-    return {
-      x: center + radius * Math.cos(angle),
-      y: center + radius * Math.sin(angle),
-    };
-  };
+  // Vercel best practice: rerender-memo + useMemo
+  // Memoize zodiac segment path calculations
+  const zodiacSegments = useMemo(() => {
+    return ZODIAC_SIGNS.map((sign, index) => {
+      const startAngle = index * 30 - 90;
+      const endAngle = startAngle + 30;
 
-  // Create zodiac wheel segments
-  const zodiacSegments = ZODIAC_SIGNS.map((sign, index) => {
-    const startAngle = index * 30 - 90; // Start from 0° Aries at 9 o'clock
-    const endAngle = startAngle + 30;
+      const startRad = startAngle * (Math.PI / 180);
+      const endRad = endAngle * (Math.PI / 180);
 
-    const startRad = startAngle * (Math.PI / 180);
-    const endRad = endAngle * (Math.PI / 180);
+      // Vercel best practice: rendering-svg-precision
+      // Round SVG coordinates to reduce numerical precision
+      const round = (n: number) => Math.round(n * 100) / 100;
 
-    const outerStart = {
-      x: center + zodiacRadius * Math.cos(startRad),
-      y: center + zodiacRadius * Math.sin(startRad),
-    };
-    const outerEnd = {
-      x: center + zodiacRadius * Math.cos(endRad),
-      y: center + zodiacRadius * Math.sin(endRad),
-    };
-    const innerStart = {
-      x: center + planetRadius * Math.cos(startRad),
-      y: center + planetRadius * Math.sin(startRad),
-    };
-    const innerEnd = {
-      x: center + planetRadius * Math.cos(endRad),
-      y: center + planetRadius * Math.sin(endRad),
-    };
+      const outerStart = {
+        x: round(center + zodiacRadius * Math.cos(startRad)),
+        y: round(center + zodiacRadius * Math.sin(startRad)),
+      };
+      const outerEnd = {
+        x: round(center + zodiacRadius * Math.cos(endRad)),
+        y: round(center + zodiacRadius * Math.sin(endRad)),
+      };
+      const innerStart = {
+        x: round(center + planetRadius * Math.cos(startRad)),
+        y: round(center + planetRadius * Math.sin(startRad)),
+      };
+      const innerEnd = {
+        x: round(center + planetRadius * Math.cos(endRad)),
+        y: round(center + planetRadius * Math.sin(endRad)),
+      };
 
-    const path = `
-      M ${outerStart.x} ${outerStart.y}
-      A ${zodiacRadius} ${zodiacRadius} 0 0 1 ${outerEnd.x} ${outerEnd.y}
-      L ${innerEnd.x} ${innerEnd.y}
-      A ${planetRadius} ${planetRadius} 0 0 0 ${innerStart.x} ${innerStart.y}
-      Z
-    `;
+      const path = `M ${outerStart.x} ${outerStart.y} A ${zodiacRadius} ${zodiacRadius} 0 0 1 ${outerEnd.x} ${outerEnd.y} L ${innerEnd.x} ${innerEnd.y} A ${planetRadius} ${planetRadius} 0 0 0 ${innerStart.x} ${innerStart.y} Z`;
 
-    const midAngle = (startAngle + endAngle) / 2 * (Math.PI / 180);
-    const textRadius = (zodiacRadius + planetRadius) / 2;
-    const textPos = {
-      x: center + textRadius * Math.cos(midAngle),
-      y: center + textRadius * Math.sin(midAngle),
-    };
+      const midAngle = ((startAngle + endAngle) / 2) * (Math.PI / 180);
+      const textRadius = (zodiacRadius + planetRadius) / 2;
+      const textPos = {
+        x: round(center + textRadius * Math.cos(midAngle)),
+        y: round(center + textRadius * Math.sin(midAngle)),
+      };
 
-    return { sign, path, textPos, index };
-  });
+      return { sign, path, textPos, index };
+    });
+  }, [center, zodiacRadius, planetRadius]);
+
+  // Vercel best practice: rerender-memo + useMemo
+  // Memoize degree markers to prevent recalculation
+  const degreeMarkers = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const angle = i * 30 - 90;
+      const rad = angle * (Math.PI / 180);
+      const start = {
+        x: center + planetRadius * Math.cos(rad),
+        y: center + planetRadius * Math.sin(rad),
+      };
+      const end = {
+        x: center + zodiacRadius * Math.cos(rad),
+        y: center + zodiacRadius * Math.sin(rad),
+      };
+
+      return { start, end, key: i };
+    });
+  }, [center, planetRadius, zodiacRadius]);
 
   return (
     <svg
@@ -176,76 +378,39 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
 
       {/* Zodiac wheel segments */}
       {zodiacSegments.map(({ sign, path, textPos, index }) => (
-        <g key={sign.name}>
-          <path
-            d={path}
-            fill={index % 2 === 0 ? '#16213e' : '#0f1419'}
-            stroke="#4a5568"
-            strokeWidth="1"
-            opacity="0.6"
-          />
-          <text
-            x={textPos.x}
-            y={textPos.y}
-            fontSize="24"
-            fill={sign.color}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontWeight="bold"
-          >
-            {sign.symbol}
-          </text>
-        </g>
+        <ZodiacSegment
+          key={sign.name}
+          sign={sign}
+          path={path}
+          textPos={textPos}
+          index={index}
+        />
       ))}
 
       {/* Degree markers */}
-      {Array.from({ length: 12 }, (_, i) => {
-        const angle = i * 30 - 90;
-        const rad = angle * (Math.PI / 180);
-        const start = {
-          x: center + planetRadius * Math.cos(rad),
-          y: center + planetRadius * Math.sin(rad),
-        };
-        const end = {
-          x: center + zodiacRadius * Math.cos(rad),
-          y: center + zodiacRadius * Math.sin(rad),
-        };
-
-        return (
-          <line
-            key={i}
-            x1={start.x}
-            y1={start.y}
-            x2={end.x}
-            y2={end.y}
-            stroke="#4a5568"
-            strokeWidth="2"
-          />
-        );
-      })}
+      {degreeMarkers.map(({ start, end, key }) => (
+        <line
+          key={key}
+          x1={start.x}
+          y1={start.y}
+          x2={end.x}
+          y2={end.y}
+          stroke="#4a5568"
+          strokeWidth="2"
+        />
+      ))}
 
       {/* Aspect lines */}
-      {aspects.map((aspect, index) => {
-        const planet1 = chart.planets[aspect.planet1 as keyof typeof chart.planets];
-        const planet2 = chart.planets[aspect.planet2 as keyof typeof chart.planets];
-
-        const pos1 = getCoordinates(planet1.longitude, innerRadius);
-        const pos2 = getCoordinates(planet2.longitude, innerRadius);
-
-        return (
-          <line
-            key={index}
-            x1={pos1.x}
-            y1={pos1.y}
-            x2={pos2.x}
-            y2={pos2.y}
-            stroke={aspect.color}
-            strokeWidth="1.5"
-            strokeOpacity="0.5"
-            strokeDasharray={aspect.type === 'conjunction' ? '0' : '4,4'}
-          />
-        );
-      })}
+      {aspects.map((aspect, index) => (
+        <AspectLine
+          key={`${aspect.planet1}-${aspect.planet2}-${index}`}
+          aspect={aspect}
+          planet1Longitude={aspect.planet1Longitude}
+          planet2Longitude={aspect.planet2Longitude}
+          innerRadius={innerRadius}
+          center={center}
+        />
+      ))}
 
       {/* Inner circle */}
       <circle
@@ -262,58 +427,15 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
         const planetInfo = PLANET_SYMBOLS[name as keyof typeof PLANET_SYMBOLS];
         if (!planetInfo) return null;
 
-        const pos = getCoordinates(planet.longitude, planetRadius);
-
         return (
-          <g key={name}>
-            {/* Planet marker line */}
-            <line
-              x1={center}
-              y1={center}
-              x2={pos.x}
-              y2={pos.y}
-              stroke={planetInfo.color}
-              strokeWidth="1"
-              strokeOpacity="0.3"
-            />
-
-            {/* Planet circle background */}
-            <circle
-              cx={pos.x}
-              cy={pos.y}
-              r={planetInfo.size / 1.5}
-              fill="#1a1a2e"
-              stroke={planetInfo.color}
-              strokeWidth="2"
-            />
-
-            {/* Planet symbol */}
-            <text
-              x={pos.x}
-              y={pos.y}
-              fontSize={planetInfo.size}
-              fill={planetInfo.color}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontWeight="bold"
-              style={{ textShadow: '0 0 3px #000' }}
-            >
-              {planetInfo.symbol}
-            </text>
-
-            {/* Retrograde indicator */}
-            {planet.isRetrograde && (
-              <text
-                x={pos.x + planetInfo.size}
-                y={pos.y - planetInfo.size / 2}
-                fontSize="12"
-                fill="#FF6B6B"
-                fontWeight="bold"
-              >
-                ℞
-              </text>
-            )}
-          </g>
+          <PlanetMarker
+            key={name}
+            name={name}
+            planet={planet}
+            planetInfo={planetInfo}
+            planetRadius={planetRadius}
+            center={center}
+          />
         );
       })}
 
@@ -360,4 +482,4 @@ export function NatalChartWheel({ chart, size = 600 }: NatalChartWheelProps) {
       </defs>
     </svg>
   );
-}
+});

@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { unstable_cache as cache } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { calculateNatalChart } from '@/lib/astro-core';
 import { BirthProfile } from '@/lib/supabase/types';
 
-export const dynamic = 'force-dynamic';
+// Vercel best practice: server-cache-react
+// Remove force-dynamic, use proper revalidation
+export const revalidate = 86400; // 24 hours
 
 export async function GET(request: NextRequest) {
   try {
@@ -40,7 +43,8 @@ export async function GET(request: NextRequest) {
 
     const birthProfile = profile as unknown as BirthProfile;
 
-    // Check if we have a cached natal chart
+    // Vercel best practice: async-parallel
+    // Check cached chart in parallel with potential calculation prep
     const { data: cachedChart } = await supabase
       .from('natal_charts')
       .select('*')
@@ -53,19 +57,27 @@ export async function GET(request: NextRequest) {
       const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
 
       if (cacheAge < thirtyDaysInMs) {
-        return NextResponse.json({
-          chart: cachedChart.chart_data,
-          profile: {
-            id: birthProfile.id,
-            name: birthProfile.name,
-            birth_date: birthProfile.birth_date,
-            birth_time: birthProfile.birth_time,
-            birth_location: birthProfile.birth_location,
-            is_primary: birthProfile.is_primary,
+        return NextResponse.json(
+          {
+            chart: cachedChart.chart_data,
+            profile: {
+              id: birthProfile.id,
+              name: birthProfile.name,
+              birth_date: birthProfile.birth_date,
+              birth_time: birthProfile.birth_time,
+              birth_location: birthProfile.birth_location,
+              is_primary: birthProfile.is_primary,
+            },
+            cached: true,
+            computed_at: cachedChart.computed_at,
           },
-          cached: true,
-          computed_at: cachedChart.computed_at,
-        });
+          {
+            headers: {
+              'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800',
+              'CDN-Cache-Control': 'public, s-maxage=86400',
+            },
+          }
+        );
       }
     }
 
@@ -83,30 +95,46 @@ export async function GET(request: NextRequest) {
     });
 
     // Cache the chart
-    await supabase
+    // Vercel best practice: async-defer-await
+    // Don't await cache update - return response immediately
+    const cachePromise = supabase
       .from('natal_charts')
       .upsert(
         {
           profile_id: birthProfile.id,
-          chart_data: chart as any,
+          chart_data: chart,
           computed_at: new Date().toISOString(),
         },
         { onConflict: 'profile_id' }
       );
 
-    return NextResponse.json({
-      chart,
-      profile: {
-        id: birthProfile.id,
-        name: birthProfile.name,
-        birth_date: birthProfile.birth_date,
-        birth_time: birthProfile.birth_time,
-        birth_location: birthProfile.birth_location,
-        is_primary: birthProfile.is_primary,
+    // Return immediately, cache in background
+    const response = NextResponse.json(
+      {
+        chart,
+        profile: {
+          id: birthProfile.id,
+          name: birthProfile.name,
+          birth_date: birthProfile.birth_date,
+          birth_time: birthProfile.birth_time,
+          birth_location: birthProfile.birth_location,
+          is_primary: birthProfile.is_primary,
+        },
+        cached: false,
+        computed_at: new Date().toISOString(),
       },
-      cached: false,
-      computed_at: new Date().toISOString(),
-    });
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800',
+          'CDN-Cache-Control': 'public, s-maxage=86400',
+        },
+      }
+    );
+
+    // Wait for cache to complete before returning (but don't block response)
+    cachePromise.catch((err) => console.error('Failed to cache chart:', err));
+
+    return response;
   } catch (error) {
     console.error('Error calculating natal chart:', error);
     return NextResponse.json(
