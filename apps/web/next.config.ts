@@ -14,11 +14,8 @@ const nextConfig: NextConfig = {
   // Ensure proper trailing slash handling
   trailingSlash: false,
 
-  // Explicitly define environment variables for the browser
-  env: {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  },
+  // Environment variables are automatically available when prefixed with NEXT_PUBLIC_
+  // No need to explicitly define them here
 };
 
 export default nextConfig;
