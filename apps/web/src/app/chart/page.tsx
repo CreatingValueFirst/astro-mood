@@ -13,6 +13,7 @@ import { NatalChartWheel } from '@/components/NatalChartWheel';
 import { ChartLegend } from '@/components/ChartLegend';
 import { AspectTable } from '@/components/AspectTable';
 import { NatalChart, BirthProfile } from '@/lib/supabase/types';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 const PLANET_SYMBOLS = {
   sun: '☉',
@@ -28,6 +29,7 @@ const PLANET_SYMBOLS = {
 };
 
 export default function ChartPage() {
+  const prefersReducedMotion = useReducedMotion();
   const [chart, setChart] = useState<NatalChart | null>(null);
   const [profile, setProfile] = useState<Partial<BirthProfile> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -97,11 +99,13 @@ export default function ChartPage() {
     <div className="relative min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white p-4 sm:p-6 md:p-8">
       <StarryBackground />
 
-      <motion.div
-        className="max-w-7xl mx-auto space-y-6 relative z-10"
-        initial={{ opacity: 0, y: 20 }}
+      <motion.main
+        id="main-content"
+        tabIndex={-1}
+        className="max-w-7xl mx-auto space-y-6 relative z-10 outline-none"
+        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
       >
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -304,7 +308,7 @@ export default function ChartPage() {
 
         {/* Chart Legend */}
         <ChartLegend />
-      </motion.div>
+      </motion.main>
     </div>
   );
 }

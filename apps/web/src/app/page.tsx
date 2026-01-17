@@ -66,8 +66,10 @@ export default function Home() {
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom overflow-hidden">
       <StarryBackground />
 
-      <motion.div
-        className="container flex max-w-4xl flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:py-12 relative z-10"
+      <motion.main
+        id="main-content"
+        tabIndex={-1}
+        className="container flex max-w-4xl flex-col items-center gap-6 px-4 py-8 text-center sm:gap-8 sm:py-12 relative z-10 outline-none"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -180,7 +182,7 @@ export default function Home() {
         >
           Made with ☄️ using real ephemeris data
         </motion.p>
-      </motion.div>
+      </motion.main>
     </div>
   );
 }

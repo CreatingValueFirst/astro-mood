@@ -68,8 +68,10 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
     <div className="relative min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white p-4 sm:p-6 md:p-8 safe-top safe-bottom overflow-hidden">
       <StarryBackground />
 
-      <motion.div
-        className="max-w-6xl mx-auto space-y-6 sm:space-y-8 relative z-10"
+      <motion.main
+        id="main-content"
+        tabIndex={-1}
+        className="max-w-6xl mx-auto space-y-6 sm:space-y-8 relative z-10 outline-none"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -188,7 +190,7 @@ export function DashboardClient({ profile, userEmail, onSignOut }: DashboardClie
             </CardContent>
           </Card>
         </motion.div>
-      </motion.div>
+      </motion.main>
     </div>
   );
 }
