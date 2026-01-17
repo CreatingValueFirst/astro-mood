@@ -4,9 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 import { calculatePlanetaryPositions, calculateNatalChart } from '@/lib/astro-core';
 import { BirthProfile } from '@/lib/supabase/types';
 
+// API routes using cookies must be dynamic
+export const dynamic = 'force-dynamic';
+
 // Vercel best practice: server-cache-react
-// Remove force-dynamic to allow caching
-// Use time-based revalidation instead
+// Cache responses at the application level
 export const revalidate = 3600; // Cache for 1 hour
 
 interface TransitAspect {

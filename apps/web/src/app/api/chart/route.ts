@@ -4,8 +4,11 @@ import { createClient } from '@/lib/supabase/server';
 import { calculateNatalChart } from '@/lib/astro-core';
 import { BirthProfile } from '@/lib/supabase/types';
 
+// API routes using cookies must be dynamic
+export const dynamic = 'force-dynamic';
+
 // Vercel best practice: server-cache-react
-// Remove force-dynamic, use proper revalidation
+// Cache responses at the application level
 export const revalidate = 86400; // 24 hours
 
 export async function GET(request: NextRequest) {

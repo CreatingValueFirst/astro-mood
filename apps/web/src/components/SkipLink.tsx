@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Skip-to-Content Link Component
  *
