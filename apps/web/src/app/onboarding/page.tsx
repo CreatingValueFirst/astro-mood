@@ -120,6 +120,7 @@ export default function OnboardingPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  autoComplete="name"
                   className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300"
                 />
               </motion.div>
@@ -141,6 +142,7 @@ export default function OnboardingPage() {
                   onChange={(e) => setBirthDate(e.target.value)}
                   required
                   max={new Date().toISOString().split('T')[0]}
+                  autoComplete="bday"
                   className="bg-gray-800/50 border-purple-500/30 text-white h-12 text-base focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300"
                 />
                 <p className="text-xs text-gray-500 mt-1">

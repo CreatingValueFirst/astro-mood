@@ -120,6 +120,7 @@ export default function LoginPage() {
                     onFocus={() => setEmailFocused(true)}
                     onBlur={() => setEmailFocused(false)}
                     required
+                    autoComplete="email"
                     className={`bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base transition-all duration-300 ${
                       emailFocused ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : ''
                     }`}
@@ -147,6 +148,7 @@ export default function LoginPage() {
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={() => setPasswordFocused(false)}
                     required
+                    autoComplete="current-password"
                     className={`bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base transition-all duration-300 ${
                       passwordFocused ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : ''
                     }`}

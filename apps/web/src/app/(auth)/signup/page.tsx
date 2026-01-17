@@ -150,6 +150,7 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                   className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300"
                 />
               </motion.div>
@@ -173,6 +174,7 @@ export default function SignupPage() {
                   onFocus={() => setPasswordFocused(true)}
                   required
                   minLength={6}
+                  autoComplete="new-password"
                   className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300"
                 />
                 {showPasswordValidation && (
@@ -211,6 +213,7 @@ export default function SignupPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   minLength={6}
+                  autoComplete="new-password"
                   className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 h-12 text-base focus:border-purple-500 focus:shadow-[0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300"
                 />
                 {showMatchValidation && (
