@@ -19,7 +19,7 @@
  * Then in your main content:
  * ```tsx
  * <main id="main-content" tabIndex={-1}>
- *   {/* content */}
+ *   ...content here...
  * </main>
  * ```
  */
