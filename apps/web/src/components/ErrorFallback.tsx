@@ -44,6 +44,7 @@ export function ErrorFallback({
             <button
               onClick={reset}
               className="flex-shrink-0 p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors"
+              aria-label="Try again"
               title="Try again"
             >
               <RefreshCw className="h-4 w-4 text-red-300" />
