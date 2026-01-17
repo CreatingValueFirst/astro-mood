@@ -108,8 +108,16 @@ export async function GET(request: NextRequest) {
         { onConflict: 'profile_id' }
       );
 
-    // Return immediately, cache in background
-    const response = NextResponse.json(
+    // Cache chart in background (fire and forget)
+    // Vercel best practice: Don't await - return response immediately
+    cachePromise.then(({ error }) => {
+      if (error) {
+        console.error('Failed to cache chart:', error);
+      }
+    });
+
+    // Return immediately
+    return NextResponse.json(
       {
         chart,
         profile: {
@@ -130,11 +138,6 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-
-    // Wait for cache to complete before returning (but don't block response)
-    cachePromise.catch((err) => console.error('Failed to cache chart:', err));
-
-    return response;
   } catch (error) {
     console.error('Error calculating natal chart:', error);
     return NextResponse.json(
