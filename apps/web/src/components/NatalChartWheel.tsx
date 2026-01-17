@@ -39,11 +39,11 @@ const PLANET_SYMBOLS = {
 } as const;
 
 const ASPECT_COLORS = {
-  conjunction: '#FFD700',
-  sextile: '#00CED1',
-  square: '#FF4500',
-  trine: '#32CD32',
-  opposition: '#FF1493',
+  conjunction: '#FFD700', // Gold - Major harmonious
+  sextile: '#00CED1',     // Cyan - Harmonious
+  square: '#FF4500',      // Red-Orange - Challenging
+  trine: '#32CD32',       // Lime Green - Very harmonious
+  opposition: '#FF1493',  // Deep Pink - Tension
 } as const;
 
 const ASPECT_ANGLES = {
@@ -130,17 +130,53 @@ const AspectLine = memo(function AspectLine({
     };
   }, [planet2Longitude, innerRadius, center]);
 
+  // Enhanced aspect line styling based on type
+  const getAspectStyle = (type: string) => {
+    switch (type) {
+      case 'conjunction':
+        return { width: 3, opacity: 0.9, dashArray: '0' };
+      case 'opposition':
+        return { width: 2.5, opacity: 0.8, dashArray: '0' };
+      case 'trine':
+        return { width: 2, opacity: 0.75, dashArray: '0' };
+      case 'square':
+        return { width: 2, opacity: 0.7, dashArray: '5,5' };
+      case 'sextile':
+        return { width: 1.5, opacity: 0.65, dashArray: '3,3' };
+      default:
+        return { width: 1.5, opacity: 0.6, dashArray: '4,4' };
+    }
+  };
+
+  const style = getAspectStyle(aspect.type);
+
   return (
-    <line
-      x1={pos1.x}
-      y1={pos1.y}
-      x2={pos2.x}
-      y2={pos2.y}
-      stroke={aspect.color}
-      strokeWidth="1.5"
-      strokeOpacity="0.5"
-      strokeDasharray={aspect.type === 'conjunction' ? '0' : '4,4'}
-    />
+    <g>
+      {/* Glow effect for aspect line */}
+      <line
+        x1={pos1.x}
+        y1={pos1.y}
+        x2={pos2.x}
+        y2={pos2.y}
+        stroke={aspect.color}
+        strokeWidth={style.width + 2}
+        strokeOpacity={style.opacity * 0.3}
+        strokeDasharray={style.dashArray}
+        filter="url(#aspect-glow)"
+      />
+      {/* Main aspect line */}
+      <line
+        x1={pos1.x}
+        y1={pos1.y}
+        x2={pos2.x}
+        y2={pos2.y}
+        stroke={aspect.color}
+        strokeWidth={style.width}
+        strokeOpacity={style.opacity}
+        strokeDasharray={style.dashArray}
+        strokeLinecap="round"
+      />
+    </g>
   );
 });
 
@@ -180,14 +216,16 @@ const PlanetMarker = memo(function PlanetMarker({
         strokeOpacity="0.3"
       />
 
-      {/* Planet circle background */}
+      {/* Planet circle background with glow */}
       <circle
         cx={pos.x}
         cy={pos.y}
-        r={planetInfo.size / 1.5}
-        fill="#1a1a2e"
+        r={planetInfo.size / 1.2}
+        fill="url(#planet-glow)"
         stroke={planetInfo.color}
-        strokeWidth="2"
+        strokeWidth="2.5"
+        filter="url(#aspect-glow)"
+        opacity="0.9"
       />
 
       {/* Planet symbol */}
@@ -467,7 +505,7 @@ export const NatalChartWheel = memo(function NatalChartWheel({
         </>
       )}
 
-      {/* Arrow marker definition */}
+      {/* Arrow marker and filter definitions */}
       <defs>
         <marker
           id="arrowhead"
@@ -479,6 +517,21 @@ export const NatalChartWheel = memo(function NatalChartWheel({
         >
           <polygon points="0 0, 10 3, 0 6" fill="#FFD700" />
         </marker>
+
+        {/* Glow filter for aspect lines */}
+        <filter id="aspect-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* Radial gradient for planet backgrounds */}
+        <radialGradient id="planet-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(147, 51, 234, 0.3)" />
+          <stop offset="100%" stopColor="rgba(26, 26, 46, 1)" />
+        </radialGradient>
       </defs>
     </svg>
   );
