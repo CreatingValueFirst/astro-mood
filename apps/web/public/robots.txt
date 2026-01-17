@@ -1,0 +1,15 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow personal/private pages
+Disallow: /dashboard
+Disallow: /chart
+Disallow: /onboarding
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://astro-mood-wheat.vercel.app/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

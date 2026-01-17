@@ -6,6 +6,7 @@ import { Sparkles, Calendar, Brain } from 'lucide-react';
 import { AnimatedButton } from '@/components/AnimatedButton';
 import { StarryBackground } from '@/components/StarryBackground';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { StructuredData, organizationSchema, webApplicationSchema } from '@/components/StructuredData';
 
 export default function Home() {
   const prefersReducedMotion = useReducedMotion();
@@ -63,8 +64,11 @@ export default function Home() {
     ? { duration: 0 }
     : { type: 'spring' as const, stiffness: 300, damping: 20 };
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom overflow-hidden">
-      <StarryBackground />
+    <>
+      <StructuredData data={organizationSchema} />
+      <StructuredData data={webApplicationSchema} />
+      <div className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white safe-top safe-bottom overflow-hidden">
+        <StarryBackground />
 
       <motion.main
         id="main-content"
@@ -183,6 +187,7 @@ export default function Home() {
           Made with ☄️ using real ephemeris data
         </motion.p>
       </motion.main>
-    </div>
+      </div>
+    </>
   );
 }
